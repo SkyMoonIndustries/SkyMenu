@@ -354,15 +354,25 @@ def restart():
     DisplayText(
     "",
     "",
-    "",
-    "PLEASE WAIT ...",
+    "SkyMenu updated",
+    "system restarting",
     "",
     "",
     ""
     )
+    time.sleep(5)
     subprocess.run(['python3','/home/skymoon/SkyMenu/skymenu.py','&'])
  #   print(stdout)
-    return()                            
+    return()   
+    DisplayText(
+    "",
+    "",
+    "SkyMenu updated",
+    "system restarting",
+    "",
+    "",
+    ""
+    )                        
 
 def rebootpi():
     DisplayText(
@@ -420,7 +430,7 @@ def shutdownpi():
 
 def update():
     subprocess.run('./update.sh', shell=True, check=True, timeout=10)
-    time.sleep(180)
+    time.sleep(90)
     restart()
 
 def runsh():
