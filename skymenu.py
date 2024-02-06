@@ -429,7 +429,7 @@ def shutdownpi():
     )
 
 def update():
-    subprocess.run('./update.sh', shell=True, check=True, timeout=10)
+    subprocess.run('./update.sh', shell=True, check=True, timeout=60)
     time.sleep(90)
     restart()
 
