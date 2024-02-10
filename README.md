@@ -1,2 +1,2 @@
 # SkyMenu
-Menu for managing services and project in Raspberry Pi
+Menu for managing services and projects in Raspberry Pi
