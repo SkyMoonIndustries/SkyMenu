@@ -107,21 +107,21 @@ def DisplayText(l1,l2,l3,l4,l5,l6,l7):
 
 def switch_menu(argument):
     switcher = {
-        0: "_Screen Off",
-        1: "_System settings",
-        2: "_**testing**",
-        3: "_runsh",
-        4: "_",
-        5: "_About",
-        6: "_Reboot Device",
-        7: "_System info", #menu 1
+        0: "_Connection Settings",
+        1: "_**testing**",
+        2: "_",
+        3: "_",
+        4: "_Screen OFF",
+        5: "_System Settings",
+        6: "_Power",
+        7: "_System info", #menu 1 (System Menu)
         8: "_OLED brightness",
-        9: "_Display Off ",
-        10: "_Key Test",
-        11: "_Restart GUI",
-        12: "_Shutdown Pi",
+        9: "_Key Test",
+        10: "_",
+        11: "_",
+        12: "_",
         13: "_",
-        14: "_show Logo", # menu 2
+        14: "_show Logo", # menu 2 (Testing Menu)
         15: "_sys infos",
         16: "_update",
         17: "_",
@@ -149,6 +149,34 @@ def switch_menu(argument):
         39: "_",
         40: "_",
         41: "_",
+        42: "_Restart GUI", # menu 6 (Power)
+        43: "_Reboot Device",
+        44: "_Shutdown Device",
+        45: "_",
+        46: "_",
+        47: "_",
+        48: "_",
+        49: "_SSH Settings", # menu 7 (Connection Settings)
+        50: "_VNC Settings",
+        51: "_",
+        52: "_",
+        53: "_",
+        54: "_",
+        55: "_",
+        56: "_Start SSH", # menu 8 (SSH Settings)
+        57: "_Stop SSH",
+        58: "_Credentials",
+        59: "_",
+        60: "_",
+        61: "_",
+        62: "_",
+        63: "_Start VNC (testing)", # menu 9 (VNC Settings)
+        64: "_Stop VNC",
+        65: "_Credentials",
+        66: "_",
+        67: "_",
+        68: "_",
+        69: "_",
 
 }
     return switcher.get(argument, "Invalid")
@@ -436,7 +464,42 @@ def update():
 def runsh():
     subprocess.run('./exp.sh', shell=True, check=True, timeout=10)
 
+def sshstart():
+    cmd = "sudo systemctl start ssh"
+    subprocess.run(cmd, shell=True, check=True, timeout=15)
 
+def sshstop():
+    cmd = "sudo systemctl stop ssh"
+    subprocess.run(cmd, shell=True, check=True, timeout=15)
+
+def vncstart():
+    cmd = "sudo systemctl start vnc"
+    subprocess.run(cmd, shell=True, check=True, timeout=15)
+
+def vncstop():
+    cmd = "sudo systemctl stop vnc"
+    subprocess.run(cmd, shell=True, check=True, timeout=15)
+
+def credentials():
+    # Main IP Address (WiFi)
+    cmd = "hostname -I | cut -d\' \' -f1"
+    ips = subprocess.run(
+    cmd, shell=True, capture_output=True, check=True, universal_newlines=True)
+    ipout = (ips.stdout)
+    DisplayText(
+        "  SSH Credentials",
+        "",
+        " IP: " + str(ipout),
+        "",
+        "",
+        "",
+        "",
+
+        )
+    while GPIO.input(KEY_LEFT_PIN):
+        #wait
+        menu = 1
+        page = 0
 
 
 ######################################################## MENU SYSTEM BELOW ##################
@@ -475,41 +538,30 @@ while 1:
 #-----------
     if selection == 1:
         # display pages --------------------------------------------------------------
-            if page == 7:
-                #system menu
+            if page == 7: # System Menu
                 if curseur == 1:
                     sysinfos()
                 if curseur == 2:
                     brightness = OLEDContrast(brightness)
                 if curseur == 3:
-                    ScreenOFF()
-                if curseur == 4:
                     KeyTest()
-                if curseur == 5:
-                    restart()
-                if curseur == 6:
-                    shutdownpi()
-
-            if page == 14:
-                # related menu
+            if page == 14: # Testing Menu
                 if curseur == 1:
-                    #blank page
                     logo()
                 if curseur == 2:
-                    #blank page
                     sysinfos()
                 if curseur == 3:
-                    update()            
-            if page == 21:
+                    update()
+            if page == 21: # ???
                 if curseur == 1:
                    #blank page
                     logo()
-            if page == 28:
+            if page == 28: # ???
                     #trigger section
                 if curseur == 1:
                     #blank page
                     blank()
-            if page == 35:
+            if page == 35: # ???
                 #template section menu
                 if curseur == 1:
                     #blank page
@@ -517,8 +569,35 @@ while 1:
                 if curseur == 2:
                     #blank page
                     blank()
-                    
-
+            if page == 42: # Power Menu
+                if curseur == 1:
+                    restart()
+                if curseur == 2:
+                    rebootpi()
+                if curseur == 3:
+                    shutdownpi()
+            if page == 49: # Connection Menu
+                if curseur == 1:
+                    page = 56
+                    curseur = 1
+                if curseur == 2:
+                    page = 63
+                    curseur = 1
+            if page == 56: # SSH Menu
+                if curseur == 1:
+                    sshstart()
+                if curseur == 2:
+                    sshstop()
+                if curseur == 3:
+                    credentials()
+            if page == 63:
+                if curseur == 1:
+                    vncstart()
+                if curseur == 2:
+                    vncstop()
+                if curseur == 3:
+                    credentials()
+            
   
 
 ############# MAIN MENU ############## -----------------------------------
@@ -526,22 +605,23 @@ while 1:
             if page == 0:
             #we are in main menu
                 if curseur == 1:
-                    ScreenOFF()
-                if curseur == 2:
-                    #system menu 
-                    page = 7
+                    # Connection Settings
+                    page = 49
                     curseur = 1
-                if curseur == 3:
-                   #logo img menu
+                if curseur == 2:
+                   #testing
                     page = 14
                     curseur = 1
-                if curseur == 4:
-                    runsh()
+                if curseur == 5:
+                    ScreenOFF()
                 if curseur == 6:
-                    # about
-                    about()
+                    # System Settings
+                    page = 7
+                    curseur = 1
                 if curseur == 7:
-                    rebootpi()                                  
+                    # Power
+                    page = 42
+                    curseur = 1                                  
                 print(page+curseur)
     ligne[1]=switch_menu(page)
     ligne[2]=switch_menu(page+1)

@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 import subprocess
+import time
+time.sleep(90)
 try:
     cmd = "ps -t | grep skymenu.py | grep -v grep"
     pid = subprocess.check_output(cmd, shell = True )
